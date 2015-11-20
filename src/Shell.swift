@@ -15,6 +15,9 @@ func run(command: String) -> [String] {
     task.waitUntilExit()
     
     let outputData = file.readDataToEndOfFile()
-    let outputString = NSString(data: outputData, encoding: NSUTF8StringEncoding)
-    return outputString?.componentsSeparatedByString("\n") as! [String]
+    if let outputString = NSString(data: outputData, encoding: NSUTF8StringEncoding) {
+        return outputString.componentsSeparatedByString("\n")
+    } else {
+        return []
+    }
 }

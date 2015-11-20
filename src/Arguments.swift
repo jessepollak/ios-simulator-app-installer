@@ -43,7 +43,7 @@ func parseArguments() -> (Arguments, GBOptionsHelper) {
     options.registerOption("l".cChar(), long: ListDevicesFlag, description: "list currently available device identifiers", flags: .NoValue)
     options.registerSeparator("HELP")
     options.registerOption("h".cChar(), long: HelpFlag, description: "print out this help", flags: .NoValue)
-    options.registerOption("p".cChar(), long: PackageLauncherFlag, description: "use a path for app-package-launcher instead of the default in /usr/local/share", flags: .RequiredValue | .Invisible)
+    options.registerOption("p".cChar(), long: PackageLauncherFlag, description: "use a path for app-package-launcher instead of the default in /usr/local/share", flags: [.RequiredValue, .Invisible])
     
     parser.registerSettings(arguments)
     parser.registerOptions(options)

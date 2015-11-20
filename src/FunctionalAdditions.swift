@@ -6,7 +6,7 @@ public func map<A,B>(f: A -> B)(optional: A?) -> B? {
 }
 
 public func map<A,B>(f: A -> B)(source: [A]) -> [B] {
-    return map(source, f)
+    return source.map(f)
 }
 
 public func flatten<A>(optional: A??) -> A? {
@@ -32,11 +32,11 @@ public func filteredWithPredicate<S : SequenceType>
     (includeElement: (S.Generator.Element) -> Bool)
     (source: S)
     -> [S.Generator.Element] {
-        return filter(source, includeElement)
+        return source.filter(includeElement)
 }
 
 public func sorted<C : SequenceType>(isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool)(source: C) -> [C.Generator.Element] {
-    return sorted(source, isOrderedBefore)
+    return source.sort(isOrderedBefore)
 }
 
 infix operator |>    { associativity left precedence 150 }

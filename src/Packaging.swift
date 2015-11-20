@@ -1,4 +1,4 @@
-func packageApp(appPath: String, #deviceIdentifier: String?, #outputPath: String?, #packageLauncherPath: String?, #fileManager: NSFileManager) {
+func packageApp(appPath: String, deviceIdentifier: String?, outputPath: String?, packageLauncherPath: String?, fileManager: NSFileManager) {
     let sourcePath = appPath
         |> getFullPath
         >>= validateFileExistence(fileManager: fileManager)
@@ -6,9 +6,9 @@ func packageApp(appPath: String, #deviceIdentifier: String?, #outputPath: String
     // TODO: Result<T,E> would be better for error handling.
     switch (isRequiredXcodeIsInstalled(), sourcePath) {
     case (false, _):
-        println("You need to have \(RequiredXcodeVersion) installed and selected via xcode-select.")
+        print("You need to have \(RequiredXcodeVersion) installed and selected via xcode-select.")
     case (_, .None):
-        println("Provided .app not found at \(appPath)")
+        print("Provided .app not found at \(appPath)")
     case (true, .Some(let sourcePath)):
         
         var targetPath: String
@@ -34,13 +34,22 @@ func packageApp(appPath: String, #deviceIdentifier: String?, #outputPath: String
         switch exitCode {
 
         case 0:
-            println("\(appPath) successfully packaged to \(targetPath)")
-            fileManager.removeItemAtPath(targetPath, error: nil)
-            fileManager.moveItemAtPath(productPath, toPath: targetPath, error: nil)
-            fileManager.removeItemAtPath(productFolder, error: nil)
+            print("\(appPath) successfully packaged to \(targetPath)")
+            do {
+                try fileManager.removeItemAtPath(targetPath)
+            } catch _ {
+            }
+            do {
+                try fileManager.moveItemAtPath(productPath, toPath: targetPath)
+            } catch _ {
+            }
+            do {
+                try fileManager.removeItemAtPath(productFolder)
+            } catch _ {
+            }
             
         default:
-            println("An error occurred when packaging \(appPath)")
+            print("An error occurred when packaging \(appPath)")
             
         }
 
@@ -53,11 +62,11 @@ func getFullPath(path: String) -> String? {
     return URL(path)?.path
 }
 
-func validateFileExistence(#fileManager: NSFileManager)(path: String) -> String? {
+func validateFileExistence(fileManager fileManager: NSFileManager)(path: String) -> String? {
     return fileManager.fileExistsAtPath(path) ? path : nil
 }
 
-func lastPathComponent(#url: NSURL) -> String? {
+func lastPathComponent(url url: NSURL) -> String? {
     return url.lastPathComponent
 }
 
@@ -66,7 +75,7 @@ func URL(path: String) -> NSURL? {
 }
 
 func deletePathExtension(path: String) -> String? {
-    return path.stringByDeletingPathExtension
+    return (path as NSString).stringByDeletingPathExtension
 }
 
 func defaultTargetPathForApp(appPath: String) -> String {

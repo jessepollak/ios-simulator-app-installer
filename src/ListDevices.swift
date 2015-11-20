@@ -3,7 +3,7 @@ func printDevices() {
         |> filterLinesContainingSimulator
         |> map(truncateUuid)
         |> sorted { $0 > $1 }
-        |> map(println)
+        |> map(printIt)
 }
 
 func supportedInstrumentsConfigurations() -> [String] {
@@ -13,12 +13,15 @@ func supportedInstrumentsConfigurations() -> [String] {
 func filterLinesContainingSimulator(lines: [String]) -> [String] {
     return lines |> filteredWithPredicate {
         string in
-        let nsstring = string as NSString
-        return nsstring.containsString("Simulator")
+        return string.rangeOfString("Simulator") != nil
     }
 }
 
 func truncateUuid(string: String) -> String {
-    let index = advance(string.endIndex, -38)
+    let index = string.endIndex.advancedBy(-38)
     return string.substringToIndex(index)
+}
+
+func printIt(string: String) {
+    print(string)
 }
